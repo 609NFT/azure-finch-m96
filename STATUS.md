@@ -1,11 +1,11 @@
 # STATUS.md — Live Infrastructure (auto-updated)
-_Last updated: 2026-07-14T18:35:05.294Z_
+_Last updated: 2026-07-14T21:33:52.241Z_
 
 ## Container
 - **Name**: vk-azure-finch-m96
-- **Status**: exited
-- **Started**: 2026-07-14T00:44:42.734403716Z
-- **Resources**: 0.00% CPU | 0B / 0B | 0B / 0B net
+- **Status**: not found (container does not exist)
+- **Started**: unknown
+- **Resources**: (not running)
 - **Memory Limit**: 512MB
 - **Port**: 4172
 
@@ -14,7 +14,7 @@ _Last updated: 2026-07-14T18:35:05.294Z_
 - **Subdomain**: azure-finch-m96.vibekit.bot
 - **DB Status**: running
 - **Health Failures**: 0
-- **Last Healthy**: 2026-07-14T18:33:23.879+00:00
+- **Last Healthy**: 2026-07-14T21:31:50.685+00:00
 
 
 ## Host
@@ -22,15 +22,7 @@ _Last updated: 2026-07-14T18:35:05.294Z_
 
 ## Recent Logs (last 10 lines)
 ```
-> dashboard@1.0.0 start
-> node server.js
-
-Dashboard starter listening on port 4172
-npm error path /app
-npm error command failed
-npm error signal SIGTERM
-npm error command sh -c node server.js
-npm error A complete log of this run can be found in: /home/appuser/.npm/_logs/2026-07-14T00_44_42_802Z-debug-0.log
+(no logs available)
 ```
 
 ## Recent Events
