@@ -1,7 +1,7 @@
 # Agent guide
 
 App: **azure-finch-m96** at https://azure-finch-m96.vibekit.bot
-Repo: template/dashboard | Port: 4172
+Repo: 609NFT/azure-finch-m96 | Port: 4172
 
 ## NEVER (these break the product)
 - **NEVER point the user at localhost / `npm start`** — only **https://azure-finch-m96.vibekit.bot**. They have no terminal. "How do I download this?" → web app: open that URL on a phone → Share → **Add to Home Screen**.

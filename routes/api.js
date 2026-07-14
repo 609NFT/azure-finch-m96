@@ -1,23 +1,33 @@
 const express = require('express');
-const mock = require('../lib/mock-data');
+const { stats, activitySeries, users } = require('../lib/mock-data');
 
 const router = express.Router();
 
-router.get('/stats', (req, res) => {
-  res.json({ stats: mock.stats() });
+// Bitcoin price endpoint
+router.get("/bitcoin", async (req, res) => {
+  try {
+    const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
+    const data = await response.json();
+    res.json({ price: data.bitcoin.usd });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch Bitcoin price" });
+  }
 });
 
-router.get('/activity', (req, res) => {
-  res.json({ series: mock.activitySeries() });
+// Stats endpoint
+router.get("/stats", (req, res) => {
+  res.json({ stats: stats() });
 });
 
-router.get('/users', (req, res) => {
-  const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-  const perPage = Math.min(50, Math.max(1, parseInt(req.query.perPage, 10) || 10));
-  const sort = String(req.query.sort || 'createdAt');
-  const dir = String(req.query.dir || 'desc');
-  const filter = String(req.query.filter || '');
-  res.json(mock.users({ page, perPage, sort, dir, filter }));
+// Activity endpoint
+router.get("/activity", (req, res) => {
+  res.json({ series: activitySeries() });
+});
+
+// Users endpoint
+router.get("/users", (req, res) => {
+  const { page = 1, perPage = 10, sort = 'createdAt', dir = 'desc', filter = '' } = req.query;
+  res.json(users({ page: parseInt(page, 10), perPage: parseInt(perPage, 10), sort, dir, filter }));
 });
 
 module.exports = router;
