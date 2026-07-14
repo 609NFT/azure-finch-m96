@@ -12,30 +12,36 @@ async function fetchJSON(url) {
   return res.json();
 }
 
-async function loadBitcoinPrice() {
+let lastBtcPrice = null;
+
+function renderBtcCard() {
   const grid = document.getElementById('stat-grid');
+  if (!grid) return;
+  let card = document.getElementById('btc-price-card');
+  if (!card) {
+    card = document.createElement('div');
+    card.id = 'btc-price-card';
+    card.className = 'stat-card btc-price';
+  }
+  if (card !== grid.firstChild) {
+    grid.insertBefore(card, grid.firstChild);
+  }
+  const value = lastBtcPrice != null ? ('$' + lastBtcPrice.toLocaleString()) : 'Loading...';
+  card.innerHTML =
+    '<div class="stat-label">B Bitcoin</div>' +
+    '<div class="stat-value">' + value + '</div>' +
+    '<div class="stat-delta muted">Live from DexScreener</div>';
+}
+
+async function loadBitcoinPrice() {
+  renderBtcCard();
   try {
     const { price } = await fetchJSON('/api/bitcoin');
-    const btcCard = document.getElementById('btc-price-card');
-    if (btcCard) {
-      btcCard.querySelector('.stat-value').textContent = `$${price.toLocaleString()}`;
-      btcCard.querySelector('.stat-delta').textContent = 'Live from CoinGecko';
-      btcCard.querySelector('.stat-delta').className = 'stat-delta muted';
-    } else {
-      // First load - add BTC card to the beginning of the grid
-      const newCard = document.createElement('div');
-      newCard.id = 'btc-price-card';
-      newCard.className = 'stat-card btc-price';
-      newCard.innerHTML = `
-        <div class="stat-label">₿ Bitcoin</div>
-        <div class="stat-value">$${price.toLocaleString()}</div>
-        <div class="stat-delta muted">Live from CoinGecko</div>
-      `;
-      grid.insertBefore(newCard, grid.firstChild);
-    }
+    lastBtcPrice = price;
   } catch (err) {
     console.error('Failed to load Bitcoin price:', err);
   }
+  renderBtcCard();
 }
 
 async function loadStats() {
@@ -47,8 +53,6 @@ async function loadStats() {
     grid.innerHTML = '<div class="load-error">Couldn\'t load stats.</div>';
     return;
   }
-  // Preserve BTC card if it exists
-  const btcCard = document.getElementById('btc-price-card');
   grid.innerHTML = stats.map((s) => {
     const positive = s.invert ? s.delta < 0 : s.delta > 0;
     const arrow = (s.invert ? s.delta < 0 : s.delta > 0) ? '▲' : '▼';
@@ -60,10 +64,7 @@ async function loadStats() {
         <div class="stat-delta ${cls}">${arrow} ${Math.abs(s.delta)}%</div>
       </div>`;
   }).join('');
-  // Re-insert BTC card at the top
-  if (btcCard) {
-    grid.insertBefore(btcCard, grid.firstChild);
-  }
+  renderBtcCard();
 }
 
 let chart = null;
@@ -187,7 +188,7 @@ async function loadUsers() {
 }
 
 function escape(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": ''' })[c]);
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
 document.getElementById('user-search').addEventListener('input', (e) => {
