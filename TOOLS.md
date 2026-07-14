@@ -22,6 +22,16 @@ curl -s "$VIBEKIT_API_URL/api/v1/hosting/app/$VIBEKIT_APP_ID/deploy-workspace/jo
 `done` → confirm with the live URL. `error` → report the failing log line and
 stop (one deploy attempt per ask — never retry-loop a broken build).
 
+App logs: `GET $VIBEKIT_API_URL/api/v1/hosting/app/$VIBEKIT_SUBDOMAIN/logs`
+
+## Boot test (only after dep/server changes — see AGENTS.md §Ship working code)
+ONE quiet boot on a random high port, never 3000/3010 or 4000–4999:
+
+```bash
+P=$((18000+RANDOM%2000)); PORT=$P node server.js & S=$!
+for i in 1 2 3; do sleep 1; curl -s -o /dev/null -w '%{http_code}\n' localhost:$P && break; done; kill $S
+```
+
 ## Parallel sub-agents — worktree isolation
 When you fan work out to multiple sub-agents that touch DIFFERENT files, give
 each its own git worktree (isolated branch + dir) so they never clobber each

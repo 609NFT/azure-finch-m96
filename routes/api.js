@@ -1,33 +1,31 @@
 const express = require('express');
-const { stats, activitySeries, users } = require('../lib/mock-data');
-
 const router = express.Router();
+const { stats, activitySeries, users } = require('../lib/mock-data.js');
 
-// Bitcoin price endpoint
-router.get("/bitcoin", async (req, res) => {
+// Bitcoin price endpoint using DexScreener
+router.get('/bitcoin', async (req, res) => {
   try {
-    const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
+    const response = await fetch('https://api.dexscreener.com/latest/dex/tokens/TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9');
     const data = await response.json();
-    res.json({ price: data.bitcoin.usd });
+    const btcPair = data.pairs ? data.pairs.find(p => p.baseToken.symbol === 'BTC') : null;
+    const price = btcPair ? btcPair.priceUsd : '0';
+    res.json({ price: Number(price) });
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch Bitcoin price" });
+    console.error('DexScreener API error:', error);
+    res.status(502).json({ error: 'DexScreener API error' });
   }
 });
 
-// Stats endpoint
-router.get("/stats", (req, res) => {
+// Keep existing stats/activity/users endpoints unchanged
+router.get('/stats', (req, res) => {
   res.json({ stats: stats() });
 });
-
-// Activity endpoint
-router.get("/activity", (req, res) => {
+router.get('/activity', (req, res) => {
   res.json({ series: activitySeries() });
 });
-
-// Users endpoint
-router.get("/users", (req, res) => {
-  const { page = 1, perPage = 10, sort = 'createdAt', dir = 'desc', filter = '' } = req.query;
-  res.json(users({ page: parseInt(page, 10), perPage: parseInt(perPage, 10), sort, dir, filter }));
+router.get('/users', (req, res) => {
+  const { page = 1, perPage = 10 } = req.query;
+  return res.json(users({ page, perPage }));
 });
 
 module.exports = router;

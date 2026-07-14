@@ -1,5 +1,5 @@
 # STATUS.md — Live Infrastructure (auto-updated)
-_Last updated: 2026-07-14T00:58:31.675Z_
+_Last updated: 2026-07-14T18:29:23.946Z_
 
 ## Container
 - **Name**: vk-azure-finch-m96
@@ -14,11 +14,11 @@ _Last updated: 2026-07-14T00:58:31.675Z_
 - **Subdomain**: azure-finch-m96.vibekit.bot
 - **DB Status**: running
 - **Health Failures**: 0
-- **Last Healthy**: 2026-07-14T00:56:08.823+00:00
+- **Last Healthy**: 2026-07-14T18:28:36.95+00:00
 
 
 ## Host
-- **Disk**: 23G used / 30G total (76% full)
+- **Disk**: 23G used / 30G total (75% full)
 
 ## Recent Logs (last 10 lines)
 ```
